@@ -15,11 +15,11 @@ public abstract class Account {
         return accountData;
     }
 
-    public void deposit(int amount) {
+    public void deposit(double amount) {
         updateBalance(getBalance() + amount);
     }
 
-    public boolean withdraw(int amount) {
+    public boolean withdraw(double amount) {
         if (canWithdraw(amount)) {
             updateBalance(getBalance() - amount);
             return true;
@@ -28,15 +28,13 @@ public abstract class Account {
         }
     }
 
-    protected boolean canWithdraw(int amount) {
-        return getBalance() >= amount;
-    }
+    abstract protected boolean canWithdraw(double amount);
 
-    public int getBalance() {
+    public double getBalance() {
         return accountData.getBalance();
     }
 
-    private void updateBalance(int newBalance) {
+    private void updateBalance(double newBalance) {
         accountData = new AccountData(accountData.getId(), accountData.getName(), accountData.getEmail(),
                 newBalance);
     }

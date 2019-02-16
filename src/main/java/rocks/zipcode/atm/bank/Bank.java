@@ -20,6 +20,12 @@ public class Bank {
         accounts.put(2000, new PremiumAccount(new AccountData(
                 2000, "Example 2", "example2@gmail.com", 200
         )));
+        accounts.put(3000, new BasicAccount(new AccountData(
+                3000, "Example 3", "example3@gmail.com", 300
+        )));
+        accounts.put(4000, new PremiumAccount(new AccountData(
+                4000, "Example 4", "example4@gmail.com", 400
+        )));
     }
 
     public ActionResult<AccountData> getAccountById(int id) {
@@ -32,21 +38,26 @@ public class Bank {
         }
     }
 
-    public ActionResult<AccountData> deposit(AccountData accountData, int amount) {
+    public ActionResult<AccountData> deposit(AccountData accountData, double amount) {
         Account account = accounts.get(accountData.getId());
         account.deposit(amount);
 
         return ActionResult.success(account.getAccountData());
     }
 
-    public ActionResult<AccountData> withdraw(AccountData accountData, int amount) {
+    public ActionResult<AccountData> withdraw(AccountData accountData, double amount) {
         Account account = accounts.get(accountData.getId());
         boolean ok = account.withdraw(amount);
 
         if (ok) {
             return ActionResult.success(account.getAccountData());
         } else {
-            return ActionResult.fail("Withdraw failed: " + amount + ". Account has: " + account.getBalance());
+            if (account instanceof PremiumAccount) {
+                return ActionResult.fail("Overdraft withdraw failed: " + amount + ". Account has: " + account.getBalance());
+            } else {
+                return ActionResult.fail("Withdraw failed: " + amount + ". Account has: " + account.getBalance());
+
+            }
         }
     }
 }
